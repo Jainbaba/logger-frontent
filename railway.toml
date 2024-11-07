@@ -1,8 +1,8 @@
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "./Dockerfile"
+dockerfilePath = "./Dockerfile.nextjs"
 watchPatterns = [
     "app/**", 
     "railway.toml",
-    "Dockerfile",
+    "Dockerfile.nextjs",
 ]
