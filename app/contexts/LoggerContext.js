@@ -12,10 +12,7 @@ export const LoggerProvider = ({ children }) => {
   const [lastFetchedTimestamp, setLastFetchedTimestamp] = useState(null);
   
   const socketRef = useRef(null); // Ref for the WebSocket
-
-  function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     setFirstMessageReceived(false); // Reset state on mount
@@ -23,23 +20,32 @@ export const LoggerProvider = ({ children }) => {
 
   // WebSocket connection useEffect
   useEffect(() => {
-    if (socketRef.current) return; // Prevent opening socket multiple times
+    if (socketRef.current) return; 
 
     const socket = new WebSocket("ws://localhost:8000/ws/log_entries/");
-    socketRef.current = socket; // Store the socket in the ref
+    socketRef.current = socket;
+
+    
 
     socket.onopen = function () {
       console.log("WebSocket connection established");
-      sleep(1000);
+      timeoutRef.current = setTimeout(() => {
+        if (!firstMessageReceived) {
+          console.log("No messages received after 5 seconds, fetching historical logs");
+          fetchHistoricalLogs(null, 25);
+        }
+      }, 5000);
     };
 
     socket.onmessage = (event) => {
       try {
         const log = JSON.parse(event.data);
-
         if (!firstMessageReceived) {
           setFirstMessageReceived(true);
-          fetchHistoricalLogs(log.timestamp, 25); // Fetch logs on first message
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          fetchHistoricalLogs(log.timestamp, 25); 
         }
 
         if (realtimeLogs.length >= 50) {
