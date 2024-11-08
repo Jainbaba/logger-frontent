@@ -23,7 +23,7 @@ const FilterManager = ({ filters, setFilters, combinedLogs }) => {
   useEffect(() => {
     async function fetchFilterOptions() {
       try {
-        const response = await fetch('http://localhost:8000/api/filter-type'); // Adjust the URL to your actual endpoint
+        const response = await fetch('http://13.127.229.179:8000/api/filter-type'); // Adjust the URL to your actual endpoint
         if (response.status === 304) {
           return; // No update needed if response is 304
         }
