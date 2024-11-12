@@ -19,7 +19,7 @@ export const LoggerProvider = ({ children }) => {
   // WebSocket connection useEffect
   useEffect(() => {
     if (socketRef.current) return;
-    const socket = new WebSocket("ws://localhost:8000/ws/log_entries/");
+    const socket = new WebSocket("ws://13.127.229.179:8000/ws/log_entries/");
     socketRef.current = socket;
 
     socket.onopen = function () {
@@ -79,11 +79,11 @@ export const LoggerProvider = ({ children }) => {
     setError(null);
 
     try {
-      const filterResponse = await fetch("http://localhost:8000/api/filter-type");
+      const filterResponse = await fetch("http://13.127.229.179:8000/api/filter-type");
       if (filterResponse.ok || filterResponse.status === 304) {
         const filterData = await filterResponse.json();
 
-        const baseUrl = "http://localhost:8000/api/historical-logs";
+        const baseUrl = "http://13.127.229.179:8000/api/historical-logs";
         const url = startDate
           ? `${baseUrl}?start=${startDate}&limit=${limit}`
           : `${baseUrl}?limit=${limit}`;
