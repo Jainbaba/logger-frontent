@@ -83,10 +83,10 @@ const LoggerBox = () => {
   const handleScroll = useCallback(async () => {
     if (scrollContainerRef.current && !isFetching) {
       const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
-      if (scrollHeight - scrollTop - clientHeight < scrollHeight * 0.1) {
+      if (scrollHeight - scrollTop - clientHeight < scrollHeight * 0.5) {
         const lastLog = combinedLogs[combinedLogs.length - 1];
         if (lastLog) {
-          const limit = Math.floor(combinedLogs.length * 0.25);
+          const limit = Math.floor(combinedLogs.length * 0.30);
           setIsFetching(true);
           try {
             await fetchMoreLogs(lastLog.timestamp, limit);
