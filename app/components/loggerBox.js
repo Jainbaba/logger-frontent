@@ -14,6 +14,7 @@ import { useLogger } from "../contexts/LoggerContext";
 import { FiAlertCircle, FiInfo, FiCheckCircle, FiClipboard } from "react-icons/fi";
 import Highlight from "react-highlight-words";
 import FilterManager from "./FilterManager"; // Import the FilterManager component
+import { green, red, yellow } from "@mui/material/colors";
 
 const levelColors = {
   ERROR: "#f44336",
@@ -59,11 +60,11 @@ const LoggerBox = () => {
   const getIcon = (level) => {
     switch (level) {
       case "ERROR":
-        return <FiAlertCircle style={{ color: levelColors.error }} />;
+        return <FiAlertCircle style={{ color: red[500] }} />;
       case "WARNING":
-        return <FiInfo style={{ color: levelColors.warning }} />;
+        return <FiInfo style={{ color: yellow[700] }} />;
       case "INFO":
-        return <FiCheckCircle style={{ color: levelColors.info }} />;
+        return <FiCheckCircle style={{ color: green[500] }} />;
       default:
         return null;
     }
@@ -137,12 +138,26 @@ const LoggerBox = () => {
 
   
 
-  // Filter logs based on active filters and search keyword
   const filteredLogs = combinedLogs.filter(log => {
     // Check if log matches all active filters
-    const matchesFilters = filters.every(filter => log[filter.type] === filter.value);
-
-    return matchesFilters;
+    const matchesFilters = filters.every(filter => {
+      const logValue = log[filter.type]; // Access the log value for the filter type
+  
+      // Check if the log has the filter type as a direct property or nested
+      if (logValue) {
+        return logValue === filter.value; // Match filter value exactly
+      } else {
+        console.warn(`Log does not have property '${filter.type} : ${filter.value}' ${log} `);
+        return false; // Filter out logs that don't match
+      }
+    });
+  
+    // Check if log entry matches the search keyword
+    const matchesKeyword = log.log_string
+      .toLowerCase()
+      .includes(searchKeyword.toLowerCase());
+  
+    return matchesFilters && (!searchKeyword || matchesKeyword);
   });
 
   return (
