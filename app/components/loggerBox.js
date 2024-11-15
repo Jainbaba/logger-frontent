@@ -78,12 +78,12 @@ const LoggerBox = () => {
         try {
           console.log(timeRange);
           const filterResponse = await fetch(
-            "http://localhost:8000/api/filter-type"
+            "http://13.127.229.179:8000/api/filter-type"
           );
           if (filterResponse.ok || filterResponse.status === 304) {
             const filterData = await filterResponse.json();
 
-            const baseUrl = "http://localhost:8000/api/custom-logs";
+            const baseUrl = "http://13.127.229.179:8000/api/custom-logs";
             const url = `${baseUrl}?end=${timeRange}`;
 
             const logResponse = await fetch(url, {
